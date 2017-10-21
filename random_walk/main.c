@@ -26,7 +26,7 @@ void random_walk(void *context, FILE *f)
 	#pragma omp parallel for reduction (+: sum_live)
 	for (int i = 0; i < ctx->N; i++) {
 		int x = ctx->x;
-		int seed = ((int)(time(NULL)*i) ^ omp_get_thread_num());
+		int seed = ((int)(time(NULL)+i) ^ omp_get_thread_num());
 		while (1) {
 			sum_live++;
 			if (x == ctx->a) {
