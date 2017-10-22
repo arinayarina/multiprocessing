@@ -4,7 +4,7 @@
 #include <omp.h>
 #include <assert.h>
 
-unsigned int seeds_for_threads[100];
+unsigned int seeds_for_threads[16];
 
 typedef struct scalar_ctx_t {
 	int a;    // начало отрезка
