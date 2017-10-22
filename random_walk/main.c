@@ -4,6 +4,8 @@
 #include <omp.h>
 #include <assert.h>
 
+unsigned int seeds_for_threads[100];
+
 typedef struct scalar_ctx_t {
 	int a;    // начало отрезка
 	int b;    // конец отрезка
@@ -26,7 +28,6 @@ void random_walk(void *context, FILE *f)
 	#pragma omp parallel for reduction (+: sum_live)
 	for (int i = 0; i < ctx->N; i++) {
 		int x = ctx->x;
-		int seed = ((int)(time(NULL)+i) ^ omp_get_thread_num());
 		while (1) {
 			sum_live++;
 			if (x == ctx->a) {
@@ -37,7 +38,9 @@ void random_walk(void *context, FILE *f)
 				success++;
 				break;
 			}
-			double choice = ((double) rand_r(&seed) / (RAND_MAX));
+			int thread_num = omp_get_thread_num();
+			int rand_num = rand_r(&seeds_for_threads[thread_num]);
+			double choice = (rand_num / (RAND_MAX));
 			if (choice <= ctx->p) {
 				x += 1;
 			} else {
@@ -70,7 +73,10 @@ int main(int argc, char **argv) {
 			.p = p,
 			.P = P,
 		};
-		
+		srand(time(NULL));
+	    	for (int j = 0; j < 100; j++) {
+			seeds_for_threads[j] = rand();
+		}
 		FILE *f = fopen("data.txt", "w");
 		if (f != NULL) {
 			random_walk(&ctx, f);
@@ -79,4 +85,3 @@ int main(int argc, char **argv) {
 	}
 	return 0;
 }
-# multiprocessing
