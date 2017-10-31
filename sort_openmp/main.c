@@ -110,6 +110,7 @@ void parallel_merge_sort (int* input, int l, int r, int* output, int s, int chun
         memcpy(&output[s], &input[l], (r - l + 1) * sizeof(int));
         return;
     }
+
     int* temp =  (int *)malloc(sizeof(int) * n);
     int q = (l + r) / 2;
     int t = q - l + 1; 
@@ -152,7 +153,7 @@ void merge_sort (void *context, FILE *stats, FILE *data) {
 	end = omp_get_wtime();
 	double quicksort_elapsed = end - start;
 	
-	fprintf(stats, "%f %f %d %d %d \\\n", quicksort_elapsed, merge_sort_elapsed, ctx->n, ctx->m, ctx->P);
+	fprintf(stats, "%fs %d %d %d \n", merge_sort_elapsed, ctx->n, ctx->m, ctx->P);
 	for (int i = 0; i < ctx->n; ++i) {
 		fprintf(data, "%d ", ctx->sorted[i]);
 	}
@@ -186,47 +187,6 @@ int main (int argc, char **argv) {
 		FILE *data = fopen("data.txt", "w");
 		
 		if (stats != NULL && data != NULL) {
-			ctx.P = 1;
-			merge_sort(&ctx, stats, data);
-			free(ctx.sorted);
-			ctx.sorted = calloc(ctx.n, sizeof(int));
-			assert(ctx.sorted);
-			srand(time(NULL));
-			for (int i = 0; i < ctx.n; ++i) {
-				ctx.sorted[i] = ctx.data[i];
-			}
-
-			ctx.P = 2;
-			merge_sort(&ctx, stats, data);
-			free(ctx.sorted);
-			ctx.sorted = calloc(ctx.n, sizeof(int));
-			assert(ctx.sorted);
-			srand(time(NULL));
-			for (int i = 0; i < ctx.n; ++i) {
-				ctx.sorted[i] = ctx.data[i];
-			}
-
-			ctx.P = 4;
-			merge_sort(&ctx, stats, data);
-			free(ctx.sorted);
-			ctx.sorted = calloc(ctx.n, sizeof(int));
-			assert(ctx.sorted);
-			srand(time(NULL));
-			for (int i = 0; i < ctx.n; ++i) {
-				ctx.sorted[i] = ctx.data[i];
-			}
-
-			ctx.P = 8;
-			merge_sort(&ctx, stats, data);
-			free(ctx.sorted);
-			ctx.sorted = calloc(ctx.n, sizeof(int));
-			assert(ctx.sorted);
-			srand(time(NULL));
-			for (int i = 0; i < ctx.n; ++i) {
-				ctx.sorted[i] = ctx.data[i];
-			}
-
-			ctx.P = 16;
 			merge_sort(&ctx, stats, data);
 		}
 		
