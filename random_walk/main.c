@@ -78,16 +78,7 @@ int main(int argc, char **argv) {
 		
 		FILE *f = fopen("data.txt", "w");
 		if (f != NULL) {
-			ctx.P = 1;
-			for( int i = 500; i < 30000; i+=500 ) {
-				ctx.N = i;
-				random_walk(&ctx, f);
-			}
-			ctx.P = 4;
-			for( int i = 500; i < 30000; i+=500 ) {
-				ctx.N = i;
-				random_walk(&ctx, f);
-			}
+			random_walk(&ctx, f);
 		}
 		fclose(f);
 	}
