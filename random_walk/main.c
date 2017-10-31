@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
 			.P = P,
 		};
 		srand(time(NULL));
-	    	for (int j = 0; j < 100; j++) {
+	    	for (int j = 0; j < 16; j++) {
 			seeds_for_threads[j] = rand();
 		}
 		FILE *f = fopen("data.txt", "w");
