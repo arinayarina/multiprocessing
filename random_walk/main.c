@@ -4,8 +4,6 @@
 #include <omp.h>
 #include <assert.h>
 
-unsigned int seeds_for_threads[16];
-
 typedef struct scalar_ctx_t {
 	int a;    // начало отрезка
 	int b;    // конец отрезка
@@ -24,10 +22,15 @@ void random_walk(void *context, FILE *f)
 	struct timeval start, end;
 	assert(gettimeofday(&start, NULL) == 0);
 	
-	omp_set_num_threads(ctx->P);
+	int * seed = (int*) malloc(ctx->N * sizeof(int));
+		int s = (int)(time(NULL));
+		for(int i = 0; i < ctx->N; i++) {
+			seed[i] = rand_r(&s);
+	}
 	#pragma omp parallel for reduction (+: sum_live)
 	for (int i = 0; i < ctx->N; i++) {
 		int x = ctx->x;
+		int new_seed = seed[i];
 		while (1) {
 			sum_live++;
 			if (x == ctx->a) {
@@ -38,8 +41,7 @@ void random_walk(void *context, FILE *f)
 				success++;
 				break;
 			}
-			int thread_num = omp_get_thread_num();
-			int rand_num = rand_r(&seeds_for_threads[thread_num]);
+			double rand_num = rand_r(&new_seed);
 			double choice = (rand_num / (RAND_MAX));
 			if (choice <= ctx->p) {
 				x += 1;
@@ -53,7 +55,7 @@ void random_walk(void *context, FILE *f)
 	
 	double prob = (double)(success) / (double)(ctx->N);
 	double mean_live = (double)(sum_live) / (double)(ctx->N);
-	fprintf(f, "%f %f %fs %d %d %d %d %f %d\n", prob, mean_live, delta, ctx->a, ctx->b, ctx->x, ctx->N, ctx->p, ctx->P);
+	fprintf(f, "%f %f %f %d %d %d %d %f %d\\\n", prob, mean_live, delta, ctx->a, ctx->b, ctx->x, ctx->N, ctx->p, ctx->P);
 }
 
 int main(int argc, char **argv) {
@@ -73,14 +75,19 @@ int main(int argc, char **argv) {
 			.p = p,
 			.P = P,
 		};
-		srand(time(NULL));
-		int s = (int)(time(NULL));
-	    	for (int j = 0; j < 16; j++) {
-			seeds_for_threads[j] = rand(&s);
-		}
+		
 		FILE *f = fopen("data.txt", "w");
 		if (f != NULL) {
-			random_walk(&ctx, f);
+			ctx.P = 1;
+			for( int i = 500; i < 30000; i+=500 ) {
+				ctx.N = i;
+				random_walk(&ctx, f);
+			}
+			ctx.P = 4;
+			for( int i = 500; i < 30000; i+=500 ) {
+				ctx.N = i;
+				random_walk(&ctx, f);
+			}
 		}
 		fclose(f);
 	}
