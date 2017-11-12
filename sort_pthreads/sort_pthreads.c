@@ -153,25 +153,25 @@ void p_merge_sort (int* input, int n) {
 }
 
 void merge_sort (FILE *stats, FILE *data) {
-	int *input = calloc(n, sizeof(int));
-	assert(input);
+    int *input = calloc(n, sizeof(int));
+    assert(input);
 	
-	int *sorted = calloc(n, sizeof(int));
-	assert(sorted);
+    int *sorted = calloc(n, sizeof(int));
+    assert(sorted);
 	
-	srand(time(NULL));
-	for (int i = 0; i < n; ++i) {
-		input[i] = rand()%10000;
-		sorted[i] = input[i];
-	}
+    srand(time(NULL));
+    for (int i = 0; i < n; ++i) {
+        input[i] = rand()%10000;
+        sorted[i] = input[i];
+    }
 	
-	for (int i = 0; i < n; ++i) {
-		fprintf(data, "%d ", input[i]);
-	}
+    for (int i = 0; i < n; ++i) {
+        fprintf(data, "%d ", input[i]);
+    }
 	
-	fprintf(data, "\n");
+    fprintf(data, "\n");
 	
-	struct timespec start, finish;
+    struct timespec start, finish;
     double merge_sort_elapsed;
     clock_gettime(CLOCK_MONOTONIC, &start);
     p_merge_sort(sorted, n);
@@ -193,7 +193,7 @@ void merge_sort (FILE *stats, FILE *data) {
     quicksort_elapsed = (finish.tv_sec - start.tv_sec);
     quicksort_elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 
-	stats = fopen("stats.txt", "a");
+    stats = fopen("stats.txt", "a");
     fseek(stats, 0, SEEK_END);
     fprintf(stats, "%f %f %d %d %d\n", merge_sort_elapsed, quicksort_elapsed, n, m, P);
     
