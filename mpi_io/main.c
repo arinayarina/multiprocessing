@@ -70,7 +70,7 @@ void func_io (void *context) {
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		double elapsed_time = finish.tv_sec - start.tv_sec;
 		elapsed_time += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-		fprintf(stats, "%d %d %d %d %.2fs\n", ctx->l, ctx->a, ctx->b, ctx->N, elapsed_time);
+		fprintf(stats, "%d %d %d %d %fs\n", ctx->l, ctx->a, ctx->b, ctx->N, elapsed_time);
 		fclose(stats);
 	}
 }
