@@ -171,13 +171,13 @@ void merge_sort (FILE *stats, FILE *data) {
 	
     fprintf(data, "\n");
 	
-    struct timespec start, finish;
+    struct timeval start, finish;
     double merge_sort_elapsed;
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    gettimeofday(&start, NULL);
     p_merge_sort(sorted, n);
-    clock_gettime(CLOCK_MONOTONIC, &finish);
-    merge_sort_elapsed = (finish.tv_sec - start.tv_sec);
-    merge_sort_elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    gettimeofday(&finish, NULL);
+    merge_sort_elapsed = finish.tv_sec + (double)finish.tv_usec / 1000000;
+    merge_sort_elapsed -= start.tv_sec + (double)start.tv_usec / 1000000;
     
     for (int i = 0; i < n; i++) {
         fprintf(data, "%d ", sorted[i]);
@@ -187,11 +187,11 @@ void merge_sort (FILE *stats, FILE *data) {
     fclose(data);
     
     double quicksort_elapsed;
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    gettimeofday(&start, NULL);
     qsort(&input[0], n, sizeof(int), cmpfunc);
-    clock_gettime(CLOCK_MONOTONIC, &finish);
-    quicksort_elapsed = (finish.tv_sec - start.tv_sec);
-    quicksort_elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    gettimeofday(&finish, NULL);
+    quicksort_elapsed = finish.tv_sec + (double)finish.tv_usec / 1000000;
+    quicksort_elapsed -= start.tv_sec + (double)start.tv_usec / 1000000;
 
     stats = fopen("stats.txt", "a");
     fseek(stats, 0, SEEK_END);
