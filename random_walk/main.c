@@ -22,7 +22,7 @@ void random_walk(void *context, FILE *f)
 	struct timeval start, end;
 	assert(gettimeofday(&start, NULL) == 0);
 	
-	int * seed = (int*) malloc(ctx->N * sizeof(int));
+	int *seed = (int*) malloc(ctx->N * sizeof(int));
 		int s = (int)(time(NULL));
 		for(int i = 0; i < ctx->N; i++) {
 			seed[i] = rand_r(&s);
@@ -56,6 +56,7 @@ void random_walk(void *context, FILE *f)
 	double prob = (double)(success) / (double)(ctx->N);
 	double mean_live = (double)(sum_live) / (double)(ctx->N);
 	fprintf(f, "%f %f %f %d %d %d %d %f %d\\\n", prob, mean_live, delta, ctx->a, ctx->b, ctx->x, ctx->N, ctx->p, ctx->P);
+	free(seed);
 }
 
 int main(int argc, char **argv) {
